@@ -213,12 +213,12 @@ export function CreateTestPage() {
               </div>
               <div className="space-y-2">
                 <Label>Assign Lesson (optional)</Label>
-                <Select value={lessonId} onValueChange={setLessonId}>
+                <Select value={lessonId || "none"} onValueChange={(val) => setLessonId(val === "none" ? "" : val)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a lesson" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No lesson</SelectItem>
+                    <SelectItem value="none">No lesson</SelectItem>
                     {lessons?.map((lesson) => (
                       <SelectItem key={lesson.id} value={lesson.id}>
                         {lesson.title}
