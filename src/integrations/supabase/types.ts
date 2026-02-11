@@ -14,16 +14,285 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      lessons: {
+        Row: {
+          description: string | null
+          file_name: string
+          file_type: string
+          file_url: string
+          id: string
+          title: string
+          uploaded_at: string
+          uploaded_by: string
+        }
+        Insert: {
+          description?: string | null
+          file_name: string
+          file_type: string
+          file_url: string
+          id?: string
+          title: string
+          uploaded_at?: string
+          uploaded_by: string
+        }
+        Update: {
+          description?: string | null
+          file_name?: string
+          file_type?: string
+          file_url?: string
+          id?: string
+          title?: string
+          uploaded_at?: string
+          uploaded_by?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          id: string
+          last_active_at: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          last_active_at?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          last_active_at?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      question_attempts: {
+        Row: {
+          answered_at: string | null
+          attempt_id: string
+          hints_used: number
+          id: string
+          is_correct: boolean
+          micro_learning_viewed: boolean
+          question_id: string
+          student_answer: string | null
+        }
+        Insert: {
+          answered_at?: string | null
+          attempt_id: string
+          hints_used?: number
+          id?: string
+          is_correct?: boolean
+          micro_learning_viewed?: boolean
+          question_id: string
+          student_answer?: string | null
+        }
+        Update: {
+          answered_at?: string | null
+          attempt_id?: string
+          hints_used?: number
+          id?: string
+          is_correct?: boolean
+          micro_learning_viewed?: boolean
+          question_id?: string
+          student_answer?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_attempts_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "test_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "question_attempts_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questions: {
+        Row: {
+          correct_answer: string
+          hints: string[]
+          id: string
+          micro_learning: string
+          order: number
+          question_text: string
+          test_id: string
+        }
+        Insert: {
+          correct_answer: string
+          hints?: string[]
+          id?: string
+          micro_learning?: string
+          order?: number
+          question_text: string
+          test_id: string
+        }
+        Update: {
+          correct_answer?: string
+          hints?: string[]
+          id?: string
+          micro_learning?: string
+          order?: number
+          question_text?: string
+          test_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      test_attempts: {
+        Row: {
+          completed_at: string | null
+          correct_answers: number
+          hints_used: number
+          id: string
+          score: number | null
+          started_at: string
+          status: string
+          student_id: string
+          test_id: string
+          time_taken_seconds: number | null
+          total_questions: number
+        }
+        Insert: {
+          completed_at?: string | null
+          correct_answers?: number
+          hints_used?: number
+          id?: string
+          score?: number | null
+          started_at?: string
+          status?: string
+          student_id: string
+          test_id: string
+          time_taken_seconds?: number | null
+          total_questions?: number
+        }
+        Update: {
+          completed_at?: string | null
+          correct_answers?: number
+          hints_used?: number
+          id?: string
+          score?: number | null
+          started_at?: string
+          status?: string
+          student_id?: string
+          test_id?: string
+          time_taken_seconds?: number | null
+          total_questions?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_attempts_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tests: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string
+          duration: number
+          id: string
+          lesson_id: string | null
+          question_count: number
+          scheduled_date: string
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string
+          duration?: number
+          id?: string
+          lesson_id?: string | null
+          question_count?: number
+          scheduled_date?: string
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string
+          duration?: number
+          id?: string
+          lesson_id?: string | null
+          question_count?: number
+          scheduled_date?: string
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tests_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "student"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +419,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "student"],
+    },
   },
 } as const

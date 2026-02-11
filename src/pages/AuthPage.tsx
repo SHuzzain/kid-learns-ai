@@ -22,6 +22,7 @@ export function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,6 +33,7 @@ export function AuthPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSuccess(null);
     setIsLoading(true);
 
     try {
@@ -41,24 +43,12 @@ export function AuthPage() {
         await signUp(email, password, name, role);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Demo quick login
-  const quickLogin = async (type: 'admin' | 'student') => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      if (type === 'admin') {
-        await login('admin@learningplatform.com', 'demo');
+      const message = err instanceof Error ? err.message : 'Something went wrong';
+      if (message.includes('check your email')) {
+        setSuccess(message);
       } else {
-        await login('emma@student.com', 'demo');
+        setError(message);
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
       setIsLoading(false);
     }
@@ -135,35 +125,16 @@ export function AuthPage() {
               : 'Fill in your details to get started'}
           </p>
 
-          {/* Demo quick login buttons */}
-          <div className="mb-6 p-4 bg-muted/50 rounded-xl">
-            <p className="text-sm text-muted-foreground mb-3">Quick demo login:</p>
-            <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => quickLogin('admin')}
-                disabled={isLoading}
-                className="flex-1"
-              >
-                Admin Demo
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => quickLogin('student')}
-                disabled={isLoading}
-                className="flex-1"
-              >
-                Student Demo
-              </Button>
-            </div>
-          </div>
-
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
               <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
                 {error}
+              </div>
+            )}
+
+            {success && (
+              <div className="p-3 rounded-lg bg-green-500/10 text-green-700 dark:text-green-400 text-sm">
+                {success}
               </div>
             )}
 
@@ -248,6 +219,7 @@ export function AuthPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 pr-10"
                   required
+                  minLength={6}
                 />
                 <button
                   type="button"
@@ -271,7 +243,7 @@ export function AuthPage() {
           <p className="text-center mt-6 text-muted-foreground">
             {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
             <button
-              onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+              onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(null); setSuccess(null); }}
               className="text-primary font-medium hover:underline"
             >
               {mode === 'login' ? 'Sign Up' : 'Sign In'}
